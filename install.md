@@ -5,9 +5,27 @@
 - [Méthodes d'installation pour l'activité](#méthodes-dinstallation-pour-lactivité)
   - [Table des matières](#table-des-matières)
   - [Installation selon l'outil](#installation-selon-loutil)
+    - [VSCode/Windows en général](#vscode-windows-en-général)
     - [Spyder](#spyder)
 
 ## Installation selon l'outil
+
+### VSCode/Windows en général
+
+Allez dans le dossier `tools`, faites bouton droit sur le dossier puis cliquez
+sur « Ouvrir la fenêtre PowerShell ici ».
+
+> Si vous êtes sur Windows 11, pensez à maintenir la touche Shift avant de
+> faire bouton droit pour avoir le bon menu.
+
+Dans la fenêtre d'invite de commande nouvellement ouverte, copiez cette ligne :
+
+```
+Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process; .\install.ps1
+```
+
+...et appuyez sur Entrée ! Ceci installera Python et les bibliothèques
+nécessaires à l'activité.
 
 ### Spyder
 
