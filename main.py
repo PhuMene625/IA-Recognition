@@ -49,7 +49,31 @@ def find_character(
     #       Dans le cas où la tête a été trouvé, localiser la cible `target`
     #       dans l'image `bottom_screen_shot`
     #       Sinon, retourner `None`.
-pass
+    top = scale_screen_shot(top_screen_shot)
+    bottom = scale_screen_shot(bottom_screen_shot)
+
+    # TODO: Localiser la tête `face` du personnage dans l'image
+    #       `top_screen_shot`.
+    #       Dans le cas où la tête a été trouvé, localiser la cible `target`
+    #       dans l'image `bottom_screen_shot`
+    #       Sinon, retourner `None`.
+    try:
+        pyautogui.locate(face, top, confidence=0.7)
+        print("Tête Trouvée")
+    except Exception:
+        print("putain g pas la tete")
+        return None
+
+    try:
+        target_loc = pyautogui.locate(target, bottom, confidence=0.6)
+        print("target locked")
+    except Exception:
+        print("ptn michel je trouve pas ma cible")
+        return None
+
+    target_loc = (target_loc[0] + target.size[0] / 2, target_loc[1] + target.size[1] / 2)
+
+    return target_loc
 ################################################################################
 # Ce qui suit est le squelette d'exécution de ton intelligence artificielle    #
 # Tu pourras modifier cette partie QU'À PARTIR de la section                   #
@@ -64,21 +88,16 @@ while True:
     bottom_screen_shot = get_screen_shot("bottom")
 
     for (character, face, target) in characters:
-        # On essaye de trouver un personnage
-        target_position = find_character(face, target, top_screen_shot, bottom_screen_shot)
-        print(character)
-        print(face)
-        print(target)
-        # Si c'est le cas...
-        if target_position:
-            # Équivalent de `click` -- la fonction `click` ne fonctionnant pas
-            # sur Linux, on doit employer une autre méthode pour parvenir à nos
-            # fins
-            pyautogui.moveTo(get_true_location(bottom_coordinates, target_position))
-            pyautogui.drag(0, 1, 0.15)
-            # On arrête l'exécution de la boucle car on a trouvé et cliqué sur
-            # la cible
-            break
+            # On essaye de trouver un personnage
+            target_position = find_character(face, target, top_screen_shot,
+                                            bottom_screen_shot)
+            # Si c'est le cas...
+            if target_position:
+                pyautogui.click(bottom_coordinates[0],bottom_coordinates[1])
+                real_position = get_true_location(bottom_coordinates, target_position)
+                pyautogui.move(real_position)
 
-    # On attend 1 seconde avant de recommencer l'opération
+                break
+
+        # On attend 1 seconde avant de recommencer l'opération
     time.sleep(1)
