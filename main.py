@@ -10,11 +10,11 @@ def get_screen_coordinates(screen: str) -> tuple[int, int, int, int]:
     et le renvoit sous la forme `tuple[int, int, int, int]`
     """
     if screen == "top":
-        # TODO: **Retourner** les coordonnés de l'écran supérieur, relatif à ton écran 
-        pass
+        # TODO: **Retourner** les coordonnés de l'écran supérieur, relatif à ton écran
+        return (599,0,720,539)
     elif screen == "bottom":
         # TODO: **Retourner** les coordonnés de l'écran inférieur, relatif à ton écran
-        pass
+        return(599,539,720,539)
     else:
         # Si la demande est invalide, on renvoit une erreur explicative
         raise ValueError(f"Type d'écran '{screen}' invalide !")
@@ -27,12 +27,13 @@ def get_screen_shot(screen: str) -> Image:
     et renvoit une `Image`
     """
     coordinates = get_screen_coordinates(screen)
-    # TODO: Prendre une capture d'écran à partir des coordonnés à l'aide de
+    # TOace: ImageDO: Prendre une capture d'écran à partir des coordonnés à l'aide de
     #       la bibliothèque PyAutoGUI et la renvoyer
-    pass
+    screen_shot = pyautogui.screenshot(region=coordinates)
+    return screen_shot
 
 def find_character(
-        face: Image, target: Image,
+        f, target: Image,
         top_screen_shot: Image, bottom_screen_shot: Image
     ) -> None | tuple[int, int, int, int]:
     """
@@ -48,8 +49,7 @@ def find_character(
     #       Dans le cas où la tête a été trouvé, localiser la cible `target`
     #       dans l'image `bottom_screen_shot`
     #       Sinon, retourner `None`.
-    pass
-
+pass
 ################################################################################
 # Ce qui suit est le squelette d'exécution de ton intelligence artificielle    #
 # Tu pourras modifier cette partie QU'À PARTIR de la section                   #
@@ -66,6 +66,9 @@ while True:
     for (character, face, target) in characters:
         # On essaye de trouver un personnage
         target_position = find_character(face, target, top_screen_shot, bottom_screen_shot)
+        print(character)
+        print(face)
+        print(target)
         # Si c'est le cas...
         if target_position:
             # Équivalent de `click` -- la fonction `click` ne fonctionnant pas
