@@ -11,10 +11,10 @@ def get_screen_coordinates(screen: str) -> tuple[int, int, int, int]:
     """
     if screen == "top":
         # TODO: **Retourner** les coordonnés de l'écran supérieur, relatif à ton écran
-        return (599,0,720,539)
+        return (813,263,426,318)
     elif screen == "bottom":
         # TODO: **Retourner** les coordonnés de l'écran inférieur, relatif à ton écran
-        return(599,539,720,539)
+        return(813,580,426,318)
     else:
         # Si la demande est invalide, on renvoit une erreur explicative
         raise ValueError(f"Type d'écran '{screen}' invalide !")
@@ -27,13 +27,15 @@ def get_screen_shot(screen: str) -> Image:
     et renvoit une `Image`
     """
     coordinates = get_screen_coordinates(screen)
-    # TOace: ImageDO: Prendre une capture d'écran à partir des coordonnés à l'aide de
+    # TODO: Prendre une capture d'écran à partir des coordonnés à l'aide de
     #       la bibliothèque PyAutoGUI et la renvoyer
+    
     screen_shot = pyautogui.screenshot(region=coordinates)
     return screen_shot
 
+
 def find_character(
-        f, target: Image,
+        face: Image, target: Image,
         top_screen_shot: Image, bottom_screen_shot: Image
     ) -> None | tuple[int, int, int, int]:
     """
@@ -51,29 +53,25 @@ def find_character(
     #       Sinon, retourner `None`.
     top = scale_screen_shot(top_screen_shot)
     bottom = scale_screen_shot(bottom_screen_shot)
-
-    # TODO: Localiser la tête `face` du personnage dans l'image
-    #       `top_screen_shot`.
-    #       Dans le cas où la tête a été trouvé, localiser la cible `target`
-    #       dans l'image `bottom_screen_shot`
-    #       Sinon, retourner `None`.
+    
     try:
-        pyautogui.locate(face, top, confidence=0.7)
+        pyautogui.locate(face, top, confidence=0.8)
         print("Tête Trouvée")
     except Exception:
         print("putain g pas la tete")
         return None
 
     try:
-        target_loc = pyautogui.locate(target, bottom, confidence=0.6)
+        target_loc = pyautogui.locate(target, bottom, confidence=0.71)
         print("target locked")
     except Exception:
         print("ptn michel je trouve pas ma cible")
         return None
 
-    target_loc = (target_loc[0] + target.size[0] / 2, target_loc[1] + target.size[1] / 2)
+    # target_loc = (target_loc[0] + target.size[0] / 2, target_loc[1] + target.size[1] / 2)
 
     return target_loc
+
 ################################################################################
 # Ce qui suit est le squelette d'exécution de ton intelligence artificielle    #
 # Tu pourras modifier cette partie QU'À PARTIR de la section                   #
@@ -88,16 +86,27 @@ while True:
     bottom_screen_shot = get_screen_shot("bottom")
 
     for (character, face, target) in characters:
-            # On essaye de trouver un personnage
-            target_position = find_character(face, target, top_screen_shot,
-                                            bottom_screen_shot)
-            # Si c'est le cas...
-            if target_position:
-                pyautogui.click(bottom_coordinates[0],bottom_coordinates[1])
-                real_position = get_true_location(bottom_coordinates, target_position)
-                pyautogui.move(real_position)
+        # On essaye de trouver un personnage
+        target_position = find_character(face, target, top_screen_shot,
+                                         bottom_screen_shot)
+        # Si c'est le cas...
+        if target_position:
+            # Équivalent de `click` -- la fonction `click` ne fonctionnant pas
+            # sur Linux, on doit employer une autre méthode pour parvenir à nos
+            # fins
+            pyautogui.moveTo(
+                (bottom_coordinates[0] + 4, bottom_coordinates[1] + 4))
+            #pyautogui.drag(0, 1, 0.15)
+            pyautogui.moveTo((0, 0))
 
-                break
+            real_position = get_true_location(bottom_coordinates, target_position)
+            pyautogui.move(real_position)
+            time.sleep(0.1)
+            pyautogui.drag(0, 1, 0.15)
 
-        # On attend 1 seconde avant de recommencer l'opération
-    time.sleep(1)
+            # On arrête l'exécution de la boucle car on a trouvé et cliqué sur
+            # la cible
+            break
+
+    # On attend 1 seconde avant de recommencer l'opération
+    time.sleep(0.01)

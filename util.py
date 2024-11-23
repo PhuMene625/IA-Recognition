@@ -33,15 +33,19 @@ def scale_screen_shot(screen_shot: Image) -> Image:
     de 1:1 par rapport à un écran physique de Nintendo DS.
     """
 
-    return screen_shot.resize(NDS_SCREEN_SIZE, Resampling.NEAREST)
+    return screen_shot.resize(NDS_SCREEN_SIZE, resample=Resampling.NEAREST)
 
-def get_true_location(screen: tuple[int, int, int, int], point: tuple[int, int]) -> tuple[int, int]:
+def get_true_location(screen: tuple[int, int, int, int],
+                      point: tuple[int, int]) -> tuple[int, int]:
     """
     Redimmensionne le point `point` relatif à l'écran virtuel `screen` pour
     correspondre à l'écran physique
     """
-    
-    return (
-        screen[0] + screen[2] / NDS_SCREEN_SIZE[0] * point[0],
-        screen[1] + screen[3] / NDS_SCREEN_SIZE[1] * point[1]
-    )
+    x = screen[2] / NDS_SCREEN_SIZE[0] * point[0] * 0.69
+    y = screen[3] / NDS_SCREEN_SIZE[1] * point[1] * 0.71
+    print(screen[2])
+    print(NDS_SCREEN_SIZE[0])
+    print(point[0])
+    print(x)
+    print(y)
+    return (x,y)
